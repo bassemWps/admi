@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}<title>Traitee demande congé</title>{% endblock %}
+
+
+{% block content %}
+<div>
+
+    {{dde.DateDebut}} conge annu={{dde.employee.nbrEmp.last.solde_conge}} et de conge maledie =  {{dde.employee.nbrEmp.last.solde_conge_maladie}}
+
+nbr = {{nbr}}
+
+</div>    
+{% endblock %}

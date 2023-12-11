@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Tableau de bord{% endblock %}
+
+
+
+<div class="content">
+{% block content %}
+
+{% if request.user.is_authenticated %}
+
+{% endif %}
+{% endblock %}
+</div>
+
+
+
+<div class="messages">
+{% block msg %}
+
+{% if messages %}
+<ul class="messages">
+{% for message in messages %}
+<li class="{{ message.tags }}">
+{{ message|safe }}
+<a href="#" class="close">✖</a>
+</li>
+{% endfor %}
+</ul>
+{% endif %}
+{% endblock %}
+</div>
+
+

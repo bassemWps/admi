@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}<title>Ajouter Employé</title>{% endblock %}
+{% block content %}
+    <h1>Ajouter Employe</h1>
+    <form action="." method="post" >
+        {% csrf_token %}
+        {{ form.as_p }}
+
+
+
+ <a href="{% url 'admi:employe_list' %}" class="btn btn-warning">Liste des employés</a>
+        <input type="submit" class="btn btn-success" value="Ajouter">
+    </form>
+
+
+
+
+{% endblock %}
+

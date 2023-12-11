@@ -1,0 +1,55 @@
+
+{% extends "base.html" %}
+
+{% block title %}<title>Liste des employés</title>{% endblock %}
+
+
+
+
+{% block content %}
+
+<h3>Liste de(s)  employés(s) </h3>
+<br>
+
+
+<div class="card-body">
+
+    <table class="table table-striped ">
+<tr>
+<th>Nom employé</th>
+<th>Fonction</th>    
+<th>Téléphone</th>
+<th>Email</th>
+<th>Date embauche</th>
+<th>Solde congé</th>
+<th>Solde congé Maladie</th>
+<th>Historique ?</th>
+<th>Modifier ?</th>
+<th>Désactiver ?</th>
+<th>Supprimer ?</th>
+</tr> 
+{% for ab in emp %}   
+<tr>
+<td>{{ab.user.first_name}}</td>
+<td>{{ab.fonction}} </td>
+<td>{{ab.phone}} </td>
+<td>{{ab.user.email}} </td>
+<td>{{ab.date_embauche}} </td>
+<td>{{ab.nbrEmp.last.solde_conge}} </td>
+<td>{{ab.nbrEmp.last.solde_conge_maladie}} </td>
+<td><a href="{% url 'admi:liste_demander_conge' ab.id %}">Historique</a></td>
+<td><a href="{% url 'admi:employe_modifier' ab.id%}">Modifier</a></td>
+<td><a href="{% url 'admi:employe_deactiver' ab.id%}">Désactiver</a></td>
+<td><a href="{% url 'admi:employe_supprimer' ab.id%}">Supprimer</a></td>
+</tr>
+{% endfor %}
+</table></div>
+
+</div>
+
+
+
+
+
+
+{% endblock %}

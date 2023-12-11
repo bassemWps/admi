@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %} 
+<title>{{ emp.nom_employe }}</title>
+ {% endblock %}
+
+{% block content %}
+
+<h1 style="margin-bottom:5%">{{ emp.nom_employe }}</h1>
+<form method="post" enctype='multipart/form-data' > 
+    {% csrf_token %} 
+    {{ form.as_p }} 
+    <input type="submit" value="Enregistrer"> 
+</form> 
+
+<br>
+
+{% endblock %}

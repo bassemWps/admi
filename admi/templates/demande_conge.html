@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}<title>Demande congé</title>{% endblock %}
+{% block content %}
+    <h1>Bonjour {{emp.first_name}}</h1>
+<!-- templates/your_template.html -->
+<div id="error_message_container" style="color:red"> 
+
+<br>
+</div>
+<form method="post" >
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
+</form>
+
+<script>
+//function update_duration() {
+       /* var start_date = new Date(document.getElementById('id_DateDebut').value);
+        var duree = new Date(document.getElementById('id_duree').value);
+
+        // Vérifier que start_date est inférieur à end_date
+        if (start_date >= end_date) {
+            error_message_container.innerHTML = "La date de début doit être antérieure à la date de fin.";
+            document.getElementById('id_duree').value = "Nan";
+            document.getElementById('id_DateDebut').value.reset();
+            end_date_input.value = null;
+            return; // Arrêter l'exécution de la fonction en cas de date incorrecte
+        }
+
+        error_message_container.innerHTML = "";
+        var time_difference = end_date.getTime() - start_date.getTime();
+        var duration = time_difference / (1000 * 60 * 60 * 24); // Convertir les millisecondes en jours
+
+        // Mettre à jour le champ en lecture seule avec la durée calculée
+        document.getElementById('id_duree').value = duration;
+        var fin_date = new Date(start_date.getTime() + duree * 24 * 60 * 60 * 1000);
+        document.getElementById('id_DateFin').value =fin_date*/
+
+
+        /*
+        var debut_input = document.getElementById('id_DateDebut');
+        var duree_input = document.getElementById('id_duree');
+        var fin_input = document.getElementById('id_DateFin');
+        var error_message_container = document.getElementById('error_message');
+    
+        var debut_date = new Date(debut_input.value);
+        var duree = parseFloat(duree_input.value);
+    
+        // Vérifier que la date de début est valide et que la durée est un nombre
+        if (isNaN(debut_date) || isNaN(duree)) {
+            error_message_container.innerHTML = "La date de début est invalide ou la durée n'est pas un nombre.";
+            fin_input.value = "";
+            return;
+        }
+    
+        // Appliquer la logique pour calculer la date de fin en fonction de la durée
+        var fin_date = new Date(debut_date.getTime() + duree * 24 * 60 * 60 * 1000);
+    
+        // Si la durée est inférieure à 1, alors date fin = date début
+        if (duree < 1) {
+            fin_date = debut_date;
+        } else {
+            // Si la partie décimale de la durée est différente de zéro, ajouter un jour
+            if (duree % 1 !== 0) {
+                fin_date.setDate(fin_date.getDate() + 1);
+            }
+        }
+    
+        // Mettre à jour le champ de date de fin
+        fin_input.valueAsDate = fin_date;
+    
+        error_message_container.innerHTML = "";
+    }
+
+
+*/
+document.addEventListener('DOMContentLoaded', function () {
+    var dureeInput = document.getElementById('id_duree');
+    var debutInput = document.getElementById('id_DateDebut');
+    var finInput = document.getElementById('id_DateFin');
+
+    // Écouter l'événement 'input' sur le champ de durée
+    dureeInput.addEventListener('input', function () {
+        updateFinDate();
+    });
+
+    // Fonction pour mettre à jour la date de fin en fonction de la durée
+    function updateFinDate() {
+        var debutDate = new Date(debutInput.value);
+        var duree = parseFloat(dureeInput.value);
+
+        if (!isNaN(debutDate) && !isNaN(duree)) {
+            var finDate = new Date(debutDate.getTime() + duree * 24 * 60 * 60 * 1000);
+
+            // Si la durée est inférieure à 1, alors date fin = date début
+            if (duree < 1) {
+                finDate = debutDate;
+            } else {
+                // Si la partie décimale de la durée est différente de zéro, ajouter un jour
+                if (duree % 1 !== 0) {
+                    finDate.setDate(finDate.getDate() + 1);
+                }
+            }
+
+            // Mettre à jour le champ de date de fin
+            finInput.valueAsDate = finDate;
+        }
+    }
+});
+
+
+</script>
+
+{% endblock %}

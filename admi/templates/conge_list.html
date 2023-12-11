@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block title %}<title>Liste des demandes de congés</title>{% endblock %}
+
+{% block content %}
+
+
+<h5>Filtrer les demandes de congés par période :</h5>
+<table class="table table-striped ">
+    <tr>
+    <td ><a href="{% url 'admi:liste_demander_conge_filtre' request.user.uzer.pk '1' %}">Aujourd'hui</a></td>
+    <td><a href="{% url 'admi:liste_demander_conge_filtre' request.user.uzer.pk  '2' %}">Hier</a></td>
+    <td><a href="{% url 'admi:liste_demander_conge_filtre' request.user.uzer.pk  '3' %}">Cette semaine</a></td>
+    <td><a href="{% url 'admi:liste_demander_conge_filtre' request.user.uzer.pk  '4' %}">Ce mois</a></td>
+    <td><a href="{% url 'admi:liste_demander_conge_filtre' request.user.uzer.pk  '5' %}">Cette année</a></td>
+    <td><a href="{% url 'admi:liste_demander_conge' request.user.uzer.pk   %}">Tous</a></td>
+     </table>
+    <br>
+
+<h2>Demandes de congés en attente:</h2>
+<br>
+
+
+<table class="table table-striped ">
+<tr>
+<th>Date Demande</th>
+<th>Type congé</th>
+<th>Date Début</th>
+<th>Date Fin</th>
+<th>Durée </th>
+
+
+</tr>
+{% for ab in conge_att %}
+<tr>
+<td style="text-align:left">{{ab.DateDemande}}</td>
+<td style="text-align:left">{{ab.type_conge}}</td>
+<td style="text-align:left">{{ab.DateDebut}}</td>
+<td style="text-align:left">{{ab.DateFin}}</td>
+<td style="text-align:left">{{ab.duree}}</td>
+
+
+</tr>
+{% endfor %}
+</table>
+<br><br><br>
+<hr><hr>
+
+
+
+<h2>Demandes de congés acceptés:</h2>
+    <br>
+
+    <table class="table table-striped ">
+<tr>
+    <th>Date Demande</th>
+    <th>Type congé</th>
+    <th>Date Début</th>
+    <th>Date Fin</th>
+    <th>Durée </th>
+
+
+</tr>
+{% for ab in conge_accep %}
+<tr>
+    <td style="text-align:left">{{ab.DateDemande}}</td>
+    <td style="text-align:left">{{ab.type_conge}}</td>
+    <td style="text-align:left">{{ab.DateDebut}}</td>
+    <td style="text-align:left">{{ab.DateFin}}</td>
+    <td style="text-align:left">{{ab.duree}}</td>
+
+
+</tr>
+{% endfor %}
+</table>
+<br><br><br>
+<hr><hr>
+
+<h2>Demandes de congés refusées:</h2>
+    <br>
+    <table class="table table-striped ">
+<tr>
+    <th>Date Demande</th>
+    <th>Type congé</th>
+    <th>Date Début</th>
+    <th>Date Fin</th>
+    <th>Durée </th>
+
+
+</tr>
+{% for ab in conge_ref %}
+<tr>
+    <td style="text-align:left">{{ab.DateDemande}}</td>
+    <td style="text-align:left">{{ab.type_conge}}</td>
+    <td style="text-align:left">{{ab.DateDebut}}</td>
+    <td style="text-align:left">{{ab.DateFin}}</td>
+    <td style="text-align:left">{{ab.duree}}</td>
+
+
+</tr>
+{% endfor %}
+</table>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
