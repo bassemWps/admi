@@ -152,24 +152,24 @@ EMAIL_HOST_PASSWORD = 'uoyj qlqv aoig jpms'
 
 
 
-CELERY_BROKER_URL = 'sqla+mysql://root@localhost:3306/admi'
-CELERY_RESULT_BACKEND = 'db+mysql+mysqlconnector://root@localhost:3306/admi'
-CELERY_BEAT_SCHEDULE_FILENAME = 'celerybeat-schedule'
-CELERY_TIMEZONE = 'Africa/Tunis'
+# CELERY_BROKER_URL = 'sqla+mysql://root@localhost:3306/admi'
+# CELERY_RESULT_BACKEND = 'db+mysql+mysqlconnector://root@localhost:3306/admi'
+# CELERY_BEAT_SCHEDULE_FILENAME = 'celerybeat-schedule'
+# CELERY_TIMEZONE = 'Africa/Tunis'
 
-from celery.schedules import crontab
-CELERY_BEAT_SCHEDULE = {
-    'increment-solde-conge': {
-        'task': 'admi.tasks.increment_solde_conge',
-        # 'schedule': crontab(day_of_month='1'),  # Planifiez la tâche à la fin de chaque 
-        'schedule': crontab(minute='*'),
-    },
-    'raz_solde' : {
-        'task': 'admi.tasks.raz_solde',
-        'schedule': crontab(day_of_month=1, month_of_year=1),  # Planifiez la tâche au début de chaque nouvelle année
+# from celery.schedules import crontab
+# CELERY_BEAT_SCHEDULE = {
+#     'increment-solde-conge': {
+#         'task': 'admi.tasks.increment_solde_conge',
+#         # 'schedule': crontab(day_of_month='1'),  # Planifiez la tâche à la fin de chaque 
+#         'schedule': crontab(minute='*'),
+#     },
+#     'raz_solde' : {
+#         'task': 'admi.tasks.raz_solde',
+#         'schedule': crontab(day_of_month=1, month_of_year=1),  # Planifiez la tâche au début de chaque nouvelle année
 
-    }
-}
+#     }
+# }
 
 # celery -A admi_wps worker -l info 
 # celery -A votre_projet beat -l info
