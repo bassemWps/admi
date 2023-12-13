@@ -24,7 +24,14 @@ if __name__ == '__main__':
 import os
 import sys
 
+# Ajoutez le chemin du projet au sys.path
+sys.path.append("/home/bassemAdmi/admi")
+
 if 'runserver' in sys.argv or 'shell' in sys.argv:
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'admi.settings_local')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'admi_wps.settings_local')
 else:
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'admi.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'admi_wps.settings_pythonanywhere')
+
+from django.core.management import execute_from_command_line
+
+execute_from_command_line(sys.argv)
