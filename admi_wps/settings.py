@@ -173,3 +173,5 @@ EMAIL_HOST_PASSWORD = 'uoyj qlqv aoig jpms'
 
 # celery -A admi_wps worker -l info 
 # celery -A votre_projet beat -l info
+
+# sur pythoneverywhere superuser is bassem pwd:bassem79

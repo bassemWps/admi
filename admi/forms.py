@@ -104,10 +104,13 @@ class ddecongeForm(forms.ModelForm):
         widgets={
             'DateDebut': forms.DateInput(
                 format=('%d/%m/%Y'),
+                
                 attrs={'class': 'form-control', 
-
+                        
                        'type': 'date'  # <--- IF I REMOVE THIS LINE, THE INITIAL VALUE IS DISPLAYED
-                      }),
+                      }
+                      
+                      ),
             'duree':forms.TextInput(
                 attrs={"id":"id_duree"}),
             'DateFin': forms.DateInput(
@@ -119,7 +122,11 @@ class ddecongeForm(forms.ModelForm):
                       
 
             }
-        
+        labels = {
+            'DateDebut': 'Date Début du congé',
+            'DateFin': 'Date Fin du congé',
+            'duree': 'Durée du congé',
+        }
         
     def __init__(self, *args, **kwargs):
     

@@ -1,0 +1,7 @@
+<ul>
+    {% for post in getp %}
+    <li>
+    <a href="{% url 'admi:trait_demande_conge_filtre' post.pk  %}">{{ post.employee.user.first_name }} ({{post.duree}} jours)</a>
+    </li>
+    {% endfor %}
+    </ul>

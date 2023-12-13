@@ -102,9 +102,9 @@ input[type=submit] {
 
       <form action = "{% url 'admi:dashboard' %}" class="search-form d-flex align-items-center">
         <div class="form-group">
-        <input type="search" name = "q" class="widget-title text-center" size="45"
-               placeholder = "rechercher"
-               value ="{{ request.GET.q }}" placeholder="Recherche">
+        <input type="search" name = "q" class="widget-title text-center" size="35"  
+               placeholder = "Rechercher"
+               value ="{{ request.GET.q }}" >
 
                <button type="submit" title="Chercher"></button>
         </div>
@@ -168,7 +168,12 @@ input[type=submit] {
         <a  href=" {% url 'admi:deconnexion' %}"> <h6>Déconnexion</h6></a>
     </div>
 
-
+    <div class="single-populer-post d-flex">
+      <div class="post-content">
+          <h7>Demandes de congé non traités: <br></h7>
+         {%  get_dde   %}
+         
+      </div>
         {% endif %} 
  
 
@@ -180,8 +185,11 @@ input[type=submit] {
 
 
 
-    
-            
+     <br> <hr class="dropdown-divider">
+
+          
+
+  </div>  
 
 
   </aside><!-- End Sidebar-->

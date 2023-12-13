@@ -23,7 +23,7 @@ from django.db import IntegrityError, transaction
 from django.db.models.functions import Cast
 from django.db.models import IntegerField,DecimalField,CharField
 from django.contrib.auth import authenticate, login, logout
-from datetime import timedelta
+from datetime import timedelta,date
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.admin.views.decorators import staff_member_required
@@ -34,7 +34,18 @@ from .tasks import *
 
 def dashboard(request):
     #seuil = Produit.objects.filter(quantite_stock__lte = F('seuil'))
+    query = request.GET.get('q')
+    request.session['recherche'] = query
+    if query:
+        emp=Employe.objects.filter(
+            Q(user__first_name__icontains=query)).exclude(fonction='Administrateur'
 
+            ).distinct()
+
+        cg=PasserConge.objects.filter(
+            employee__user__first_name__icontains=query).exclude(employee__fonction='Administrateur'
+            
+            ).distinct()
 
 
 
@@ -196,17 +207,21 @@ class EmployeDesactivateView(UpdateView):
     template_name = "employe_modifier.html"
     context_object_name = "emp"
 
+
     def get_success_url(self):
         messages.success(self.request,f'Employé désactivé avec succés')
         return (reverse('admi:employe_list'))
 
 
 @staff_member_required
-def employe_list(request):
+def employe_list(request,pk=None):
 
-    employe = Employe.objects.filter(actif = True)
+   
+    employe = Employe.objects.filter(actif=True).exclude(fonction='Administrateur')
 
-    
+    if request.session.get('recherche', None): 
+       employe=employe.filter(pk=pk)
+       del request.session['recherche']
 
     return render(request, 'employe_list.html', {'emp'  : employe ,
                                                
@@ -228,6 +243,9 @@ def demander_conge(request,pk):
             if ((cd ["type_conge"] == "Congé de Maladie" and cd["duree"] > km)
             or (cd ["type_conge"] == "Congé Annuel" and cd["duree"] > kc)):
                 messages.warning(request,"Attention vous avez dépassé votre solde! Réduisez la durée de votre congé")
+                return redirect('admi:employe_conge',request.user.uzer.id)
+            elif cd["DateDebut"] < date.today():
+                messages.warning(request,"Attention vérifier la date de début de votre congé")
                 return redirect('admi:employe_conge',request.user.uzer.id)
             else:
                 kong= form.save(commit=False)
@@ -265,12 +283,13 @@ def demander_conge(request,pk):
     return render(request, 'demande_conge.html', {'form': form, 'emp': request.user})
 
 
+
+
 @login_required
 def liste_demander_conge(request,pk,period=None):
     conge_accep = PasserConge.objects.filter(Accepte=True,employee=pk)
     conge_ref = PasserConge.objects.filter(Refuse=True,employee=pk)
     conge_att= PasserConge.objects.filter(Refuse=False,Accepte=False,employee=pk)
-    
     yesterday = date.today() - timedelta(days=1)
     week = ExtractWeek(date.today())
     month= ExtractMonth(date.today())
@@ -304,8 +323,11 @@ def liste_demander_conge(request,pk,period=None):
                                                 } )
 
 @staff_member_required
-def trait_demande_conge(request):
-    dde = PasserConge.objects.filter(Refuse=False,Accepte=False)
+def trait_demande_conge(request,pk=None):
+    date = datetime.now()
+    dde = PasserConge.objects.filter(Refuse=False,Accepte=False,DateDemande__year=date.year)
+    if pk:
+        dde= dde.filter(id=pk)
     dde_with_index = list(enumerate(dde))
     return render(request, 'conge_trait_dde.html', {'dde':dde_with_index,  } )
 
@@ -364,3 +386,4 @@ def conge_repondre(request,id,nbr):
 
     
     return render(request, 'conge_dde_confirm.html',{'id':id,'nbr':nbr,'dde':dde})
+

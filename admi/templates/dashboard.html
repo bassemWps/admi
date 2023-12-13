@@ -6,7 +6,28 @@
 <div class="content">
 {% block content %}
 
-{% if request.user.is_authenticated %}
+{% if request.user.is_staff %}
+
+
+{% if query %}
+
+{% if emp %}
+<h6>Employés:</h6>
+{% for ab in emp %}
+<a href="{% url 'admi:employe_list_filtre' ab.id %}"> &nbsp;{{ab.user.first_name}} &nbsp;  </a>
+{% endfor %} 
+<br><br>   
+{% endif %} 
+
+{% if cg %}
+<h6>Congés:</h6>
+{% for ab in cg %}
+<a href="{% url 'admi:trait_demande_conge_filtre' ab.id %}"> &nbsp;{{ab.employee.user.first_name}} &nbsp;  </a>
+{% endfor %}   
+<br><br> 
+{% endif %} 
+
+{% endif %}
 
 {% endif %}
 {% endblock %}
