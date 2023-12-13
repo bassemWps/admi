@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}<title>Traiter Demande congé</title>{% endblock %}
+{% block content %}
+
+
+<div class="card-body">
+
+    <table class="table table-striped ">
+<tr>
+<th>date demande</th>
+<th>Nom employe</th>    
+<th>Type conge</th>
+<th>Date début</th>
+<th>Date Fin</th>
+<th>Durée</th>
+<th>Solde congé Annuel</th>
+<th>Solde congé Maladie</th>
+
+</tr> 
+{% for index, ab in dde %}  
+<tr>
+    <tr>
+        <td>{{ab.DateDemande}}</td>
+        <td>{{ab.employee.user.first_name}}</td>
+        <td>{{ab.type_conge}}</td>
+        <td>{{ab.DateDebut}}</td>
+        <td>{{ab.DateFin}}</td>
+        <td>{{ab.duree}}</td>
+        <td>{{ab.employee.nbrEmp.last.solde_conge}}</td>
+        <td>{{ab.employee.nbrEmp.last.solde_conge_maladie}}</td>
+
+    </tr>
+    
+{% endfor %}
+</table></div>
+
+</div>
+
+
+
+
+
+
+
+{% endblock %}

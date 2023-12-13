@@ -58,7 +58,7 @@ class EmployeDesactivateForm(forms.ModelForm):
     class Meta:
         model = Employe
         fields = [
-            "actif", "fonction"
+            "actif", 
                     ]
 
 class UserRegistrationForm(forms.ModelForm):

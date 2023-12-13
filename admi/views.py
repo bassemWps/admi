@@ -214,19 +214,31 @@ class EmployeDesactivateView(UpdateView):
 
 
 @staff_member_required
-def employe_list(request,pk=None):
+def employe_list(request):
+
+   
+    employe = Employe.objects.filter(actif=True).exclude(fonction='Administrateur')
+
+
+
+    return render(request, 'employe_list.html', {'emp'  : employe ,
+                                               
+                                                } )
+
+
+@staff_member_required
+def employe_list2(request,pk=None):
 
    
     employe = Employe.objects.filter(actif=True).exclude(fonction='Administrateur')
 
     if request.session.get('recherche', None): 
        employe=employe.filter(pk=pk)
-       del request.session['recherche']
+      
 
     return render(request, 'employe_list.html', {'emp'  : employe ,
                                                
                                                 } )
-
 @login_required
 def demander_conge(request,pk):
 
@@ -323,13 +335,20 @@ def liste_demander_conge(request,pk,period=None):
                                                 } )
 
 @staff_member_required
-def trait_demande_conge(request,pk=None):
+def trait_demande_conge(request):
     date = datetime.now()
     dde = PasserConge.objects.filter(Refuse=False,Accepte=False,DateDemande__year=date.year)
-    if pk:
-        dde= dde.filter(id=pk)
+
     dde_with_index = list(enumerate(dde))
     return render(request, 'conge_trait_dde.html', {'dde':dde_with_index,  } )
+
+@staff_member_required
+def trait_demande_conge_filtre(request,pk):
+    
+    if pk:
+        dde= PasserConge.objects.filter(id=pk)
+    dde_with_index = list(enumerate(dde))
+    return render(request, 'conge_trait_dde _filtre.html', {'dde':dde_with_index,  } )
 
 
 @staff_member_required

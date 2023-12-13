@@ -12,19 +12,36 @@
 {% if query %}
 
 {% if emp %}
+
 <h6>Employés:</h6>
+<ul>
 {% for ab in emp %}
-<a href="{% url 'admi:employe_list_filtre' ab.id %}"> &nbsp;{{ab.user.first_name}} &nbsp;  </a>
+<li><a href="{% url 'admi:employe_list_filtre' ab.id %}"> &nbsp;{{ab.user.first_name}} &nbsp;  </a>
 {% endfor %} 
-<br><br>   
+</ul>
+ 
 {% endif %} 
 
 {% if cg %}
 <h6>Congés:</h6>
-{% for ab in cg %}
-<a href="{% url 'admi:trait_demande_conge_filtre' ab.id %}"> &nbsp;{{ab.employee.user.first_name}} &nbsp;  </a>
-{% endfor %}   
-<br><br> 
+<ul>
+  {% for ab in cg %}
+    <li>
+      <a href="{% url 'admi:trait_demande_conge_filtre' ab.id %}">
+        &nbsp;{{ ab.employee.user.first_name }} &nbsp; {{ ab.duree }} jours
+        {% if not ab.Accepte and not ab.Refuse %}
+          (En instance)
+        {% elif ab.Accepte %}
+          (Accepté)
+        {% elif ab.Refuse %}
+          (Refusé)
+        {% endif %}
+        à partir de {{ab.DateDebut}}
+        
+      </a>
+    </li>
+  {% endfor %}
+</ul>
 {% endif %} 
 
 {% endif %}
