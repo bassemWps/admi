@@ -20,3 +20,11 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+import os
+import sys
+
+if 'runserver' in sys.argv or 'shell' in sys.argv:
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'admi.settings_local')
+else:
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'admi.settings')
