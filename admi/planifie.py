@@ -45,8 +45,8 @@ def update_solde_conge():
                 solde_conge_maladie=0
             )
 
-# Planifier la tâche toutes les 1 minute
-schedule.every(1).minutes.do(update_solde_conge)
+
+schedule.every().day.at('00:00').do(update_solde_conge)
 
 # Boucle pour exécuter la planification en continu
 while True:
