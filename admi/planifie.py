@@ -18,6 +18,7 @@ django.setup()
 from django.utils import timezone
 from admi.apps import AdmiConfig  # Modifiez cette ligne pour importer votre AppConfig
 from admi.models import Compte
+from decimal import Decimal
 
 
 import schedule
@@ -31,8 +32,8 @@ def update_solde_conge():
     current_day = timezone.now().day
     if current_day == 1 and current_month != 1:
         for compte in comptes:
-            compte.solde_conge += 1.5
-            compte.solde_conge_maladie += 1.5
+            compte.solde_conge += Decimal('1.5')
+            compte.solde_conge_maladie += Decimal('1.5')
             compte.save()
 
     # Logique pour réinitialiser le champ solde_conge à la fin de chaque année
@@ -41,14 +42,15 @@ def update_solde_conge():
             Compte.objects.create(
                 annee=timezone.now().year,
                 employee=compte.employee,
-                solde_conge=0,
-                solde_conge_maladie=0
+                solde_conge=Decimal('0'),
+                solde_conge_maladie=Decimal('0')
             )
 
-
+# schedule.every(1).minutes.do(update_solde_conge) 
 schedule.every().day.at('00:00').do(update_solde_conge)
 
 # Boucle pour exécuter la planification en continu
 while True:
     schedule.run_pending()
     time.sleep(1)  # Attendre 1 seconde entre les vérifications
+

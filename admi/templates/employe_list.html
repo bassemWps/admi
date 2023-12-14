@@ -7,27 +7,39 @@
 
 
 {% block content %}
-
+<style>
+th{vertical-align:middle;}
+</style>
 <h3>Liste de(s)  employés(s) </h3>
 <br>
 
 
-<div class="card-body">
+<div class="container">
 
-    <table class="table table-striped ">
+    <table class="table table-bordered">
 <tr>
-<th>Nom employé</th>
-<th>Fonction</th>    
-<th>Téléphone</th>
-<th>Email</th>
-<th>Date embauche</th>
-<th>Solde congé</th>
-<th>Solde congé Maladie</th>
-<th>Historique ?</th>
-<th>Modifier ?</th>
-<th>Désactiver ?</th>
-<th>Supprimer ?</th>
+<th rowspan="2">Nom employé</th>
+<th rowspan="2">Fonction</th>    
+<th rowspan="2">Téléphone</th>
+<th rowspan="2">Email</th>
+<th rowspan="2">Date embauche</th>
+<th colspan="2">Congé Restant</th>
+<th colspan="2">Congé Pris</th>
+
+<th rowspan="2">Historique ?</th>
+<th rowspan="2">Modifier ?</th>
+<th rowspan="2">Désactiver ?</th>
+<th rowspan="2">Supprimer ?</th>
+
+
 </tr> 
+<tr>
+    <th>Annuel</th>
+    <th>Maladie</th>  
+    <th>Annuel</th>  
+    <th>Maladie</th>
+
+    </tr>
 {% for ab in emp %}   
 <tr>
 <td>{{ab.user.first_name}}</td>
@@ -37,10 +49,14 @@
 <td>{{ab.date_embauche}} </td>
 <td>{{ab.nbrEmp.last.solde_conge}} </td>
 <td>{{ab.nbrEmp.last.solde_conge_maladie}} </td>
+<td>{{ab.nombre_conges_annuels}}</td>
+<td>{{ab.nombre_conges_maladie}}</td>
+
 <td><a href="{% url 'admi:liste_demander_conge' ab.id %}">Historique</a></td>
 <td><a href="{% url 'admi:employe_modifier' ab.id%}">Modifier</a></td>
 <td><a href="{% url 'admi:employe_deactiver' ab.id%}">Désactiver</a></td>
 <td><a href="{% url 'admi:employe_supprimer' ab.id%}">Supprimer</a></td>
+
 </tr>
 {% endfor %}
 </table></div>

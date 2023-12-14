@@ -88,9 +88,12 @@ def deconnexion(request):
     messages.success(request, f'Vous avez été deconnecté')
     return redirect('admi:connexion')
 
-
+import re
 def register(request):
     if request.method == 'POST':
+        if User.objects.filter(email=request.POST.get('email')).exists():  
+            messages.warning(request,"Veuillez choisir un autre email utilisateur")
+            return redirect('admi:connexion')
         user_form = UserRegistrationForm(request.POST)
         if user_form.is_valid():
             new_user = user_form.save(commit=False)
@@ -100,6 +103,17 @@ def register(request):
             new_user.save()
             Employe.objects.create(user=new_user,phone=user_form.cleaned_data['phone'],actif=True)
         else:
+            phone_regex = re.compile(r'^\d{8}$')
+            if request.POST.get('password') != request.POST.get('password2'):
+                messages.warning(request,"Les mots de passe ne sont pas identiques")
+                print(f"{request.POST.get('password')} et  {request.POST.get('password2')}")
+            if not phone_regex.match(request.POST.get('phone')):
+                messages.warning(request,"Un numéro de tel doit comporter 8 chiffres")
+            if User.objects.filter(username=request.POST.get('username')).exists(): 
+                messages.warning(request,"Veuillez choisir un autre nom utilisateur")
+
+
+            
             messages.warning(request,"Un problème est survenu")
             return redirect('admi:connexion')
         messages.success(request, f'Votre compte à été créée avec succés')
@@ -216,12 +230,26 @@ class EmployeDesactivateView(UpdateView):
 @staff_member_required
 def employe_list(request):
 
-   
+    annee_en_cours = ExtractYear(date.today())
     employe = Employe.objects.filter(actif=True).exclude(fonction='Administrateur')
 
+    employes_avec_nombre_conges = employe.annotate(
+        nombre_conges_annuels=Sum(
+            Case(
+                When(CongEmp__DateDebut__year=annee_en_cours, CongEmp__Accepte=True, CongEmp__type_conge='Congé Annuel',  then=F('CongEmp__duree')),default=0,
+                output_field=DecimalField()
+            )
+        ),
+        nombre_conges_maladie=Sum(
+            Case(
+                When(CongEmp__DateDebut__year=annee_en_cours, CongEmp__Accepte=True, CongEmp__type_conge='Congé de Maladie',  then=F('CongEmp__duree')),default=0,
+                output_field=DecimalField()
+            )
+        ),
+    )
 
 
-    return render(request, 'employe_list.html', {'emp'  : employe ,
+    return render(request, 'employe_list.html', {'emp'  : employes_avec_nombre_conges ,
                                                
                                                 } )
 
@@ -229,7 +257,7 @@ def employe_list(request):
 @staff_member_required
 def employe_list2(request,pk=None):
 
-   
+    
     employe = Employe.objects.filter(actif=True).exclude(fonction='Administrateur')
 
     if request.session.get('recherche', None): 
