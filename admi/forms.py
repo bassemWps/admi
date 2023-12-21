@@ -32,6 +32,8 @@ class employe_consult(forms.ModelForm):
 class EmployeUpdateForm(forms.ModelForm):
     first_name = forms.CharField(max_length=30, required=True, label='Nom et prénom')
     email = forms.EmailField(max_length=254, required=True, label='Email')
+    GRADE_CHOICES = Employe.grade[:6]
+    fonction = forms.ChoiceField(choices=GRADE_CHOICES, label='Fonction')
     class Meta:
         model = Employe
         fields = [
@@ -49,6 +51,7 @@ class EmployeUpdateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Populate solde_conge field with the current value
+
         if self.instance and self.instance.nbrEmp.exists():
             self.fields['solde_conge'].initial = self.instance.nbrEmp.last().solde_conge
             self.fields['solde_conge_maladie'].initial = self.instance.nbrEmp.last().solde_conge_maladie

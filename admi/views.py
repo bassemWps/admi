@@ -30,7 +30,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.decorators import method_decorator
 from django.db.models import ProtectedError
 from django.core.mail import send_mail
-from .tasks import *
+
 
 def dashboard(request):
     #seuil = Produit.objects.filter(quantite_stock__lte = F('seuil'))
@@ -269,16 +269,22 @@ def employe_list2(request,pk=None):
                                                 } )
 @login_required
 def demander_conge(request,pk):
-
+    annee_en_cours = ExtractYear(date.today())
     if request.method == 'POST':
         form = ddecongeForm(request.POST)
         if form.is_valid():
             cd = form.cleaned_data 
 
 
-            krap = Compte.objects.filter(employee = request.user.uzer).last()
-            km = krap.solde_conge_maladie
-            kc = krap.solde_conge
+            try :
+                krap = Compte.objects.get(employee=request.user.uzer, annee=ExtractYear(cd["DateDebut"]))
+                km = krap.solde_conge_maladie
+                kc = krap.solde_conge
+                
+            except:
+                
+                km = 0
+                kc = 0
 
             if ((cd ["type_conge"] == "Congé de Maladie" and cd["duree"] > km)
             or (cd ["type_conge"] == "Congé Annuel" and cd["duree"] > kc)):
@@ -289,7 +295,7 @@ def demander_conge(request,pk):
                 return redirect('admi:employe_conge',request.user.uzer.id)
             else:
                 kong= form.save(commit=False)
-                PasserConge.objects.create(employee = request.user.uzer,
+                nouveau = PasserConge.objects.create(employee = request.user.uzer,
                 type_conge= kong.type_conge,
                 DateDebut = kong.DateDebut,
                 DateFin= kong.DateFin,
@@ -302,7 +308,11 @@ def demander_conge(request,pk):
                 dest=desto.user.email
                 subject = f"Demande de congé envoyé par {request.user.first_name}"
                 message = f"Ceci est un message automatique. N'y répondez pas.\n On vous informe que l'employé {request.user.first_name} vous a envoyé une demande de congé de {kong.duree} jours à partir du "
-                message += " {}" .format(kong.DateDebut.strftime("%d-%m-%Y"))
+                message += " {}" .format(kong.DateDebut.strftime("%d-%m-%Y \n"))
+                url_absolue = request.build_absolute_uri(f'/employe/{nouveau.id}/traiter-demande_filtre')
+                
+                message += "Veuillez y répondre en suivant le lien suivant:\n"
+                message += f"{url_absolue}"
             #message = message + usform.cleaned_data['rectification'].encode('utf8')
 
                 send_mail(subject, message, settings.EMAIL_HOST_USER, [dest])
@@ -336,22 +346,23 @@ def liste_demander_conge(request,pk,period=None):
     year = ExtractYear(date.today())
     
     if period == '1' :
-        conge_accep = conge_accep.filter(DateDemande = date.today() )
-        conge_ref = conge_ref.filter(DateDemande = date.today() )
-        conge_att= conge_att.filter(DateDemande = date.today() )
+        conge_accep = conge_accep.filter(DateDebut = date.today() )
+        conge_ref = conge_ref.filter(DateDebut = date.today() )
+        conge_att= conge_att.filter(DateDebut = date.today() )
     elif period == '2' :
-        conge_accep = conge_accep.filter(DateDemande = yesterday )
-        conge_ref = conge_ref.filter(DateDemande = yesterday )
-        conge_att = conge_att.filter(DateDemande = yesterday )
+        conge_accep = conge_accep.filter(DateDebut = yesterday )
+        conge_ref = conge_ref.filter(DateDebut = yesterday )
+        conge_att = conge_att.filter(DateDebut = yesterday )
     elif period == '3' :
-        conge_accep = conge_accep.filter(DateDemande__week = week, DateDemande__month = month ,DateDemande__year = year )
-        conge_ref = conge_ref.filter(DateDemande__week = week, DateDemande__month = month ,DateDemande__year = year )
-        conge_att = conge_att.filter(DateDemande__week = week, DateDemande__month = month ,DateDemande__year = year )
+        conge_accep = conge_accep.filter(DateDebut__week = week, DateDebut__month = month ,DateDebut__year = year )
+        conge_ref = conge_ref.filter(DateDebut__week = week, DateDebut__month = month ,DateDebut__year = year )
+        conge_att = conge_att.filter(DateDebut__week = week, DateDebut__month = month ,DateDebut__year = year )
 
     elif period == '4' :
         conge_accep = conge_accep.filter(DateDebut__month = month,DateDebut__year = year ) 
         conge_ref = conge_ref.filter(DateDebut__month = month,DateDebut__year = year ) 
         conge_att = conge_att.filter(DateDebut__month = month,DateDebut__year = year ) 
+        
     elif period == '5' :
         conge_accep = conge_accep.filter(DateDebut__year = year )
         conge_ref = conge_ref.filter(DateDebut__year = year )
@@ -360,23 +371,54 @@ def liste_demander_conge(request,pk,period=None):
     return render(request, 'conge_list.html', {'conge_accep':conge_accep,
                                                'conge_ref': conge_ref,
                                                'conge_att':conge_att,
+                                               'cle' : pk,
                                                 } )
 
 @staff_member_required
 def trait_demande_conge(request):
     date = datetime.now()
-    dde = PasserConge.objects.filter(Refuse=False,Accepte=False,DateDemande__year=date.year)
-
+    dde = PasserConge.objects.filter(Refuse=False,Accepte=False,DateDebut__year=date.year)
+    annee_en_cours = date.year
+    dde = dde.annotate(
+        nombre_conges_annuels=Sum(
+            Case(
+                When(employee__CongEmp__DateDebut__year=annee_en_cours, employee__CongEmp__Accepte=True, employee__CongEmp__type_conge='Congé Annuel',  then=F('employee__CongEmp__duree')),default=0,
+                output_field=DecimalField()
+            )
+        ),
+        nombre_conges_maladie=Sum(
+            Case(
+                When(employee__CongEmp__DateDebut__year=annee_en_cours, employee__CongEmp__Accepte=True, employee__CongEmp__type_conge='Congé de Maladie',  then=F('employee__CongEmp__duree')),default=0,
+                output_field=DecimalField()
+            )
+        ),
+    )
+    
     dde_with_index = list(enumerate(dde))
     return render(request, 'conge_trait_dde.html', {'dde':dde_with_index,  } )
 
 @staff_member_required
 def trait_demande_conge_filtre(request,pk):
-    
+    annee_en_cours = ExtractYear(date.today())
     if pk:
         dde= PasserConge.objects.filter(id=pk)
-    dde_with_index = list(enumerate(dde))
-    return render(request, 'conge_trait_dde _filtre.html', {'dde':dde_with_index,  } )
+
+        employes_avec_nombre_conges = dde.annotate(
+        nombre_conges_annuels=Sum(
+            Case(
+                When(employee__CongEmp__DateDebut__year=annee_en_cours, employee__CongEmp__Accepte=True, employee__CongEmp__type_conge='Congé Annuel',  then=F('employee__CongEmp__duree')),default=0,
+                output_field=DecimalField()
+            )
+        ),
+        nombre_conges_maladie=Sum(
+            Case(
+                When(employee__CongEmp__DateDebut__year=annee_en_cours, employee__CongEmp__Accepte=True, employee__CongEmp__type_conge='Congé de Maladie',  then=F('employee__CongEmp__duree')),default=0,
+                output_field=DecimalField()
+            )
+        ),
+    )
+    
+    return render(request, 'conge_trait_dde _filtre.html', {'dde':employes_avec_nombre_conges,  } )
 
 
 @staff_member_required

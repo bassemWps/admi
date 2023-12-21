@@ -9,12 +9,13 @@
 {% block content %}
 <style>
 th{vertical-align:middle;}
+td,th,tr{border:solid pink;text-align:center}
 </style>
 <h3>Liste de(s)  employés(s) </h3>
 <br>
 
-
-<div class="container">
+<p>Congés pris et congés restant concernant l'année en cours</p>
+<div class="content">
 
     <table class="table table-bordered">
 <tr>
@@ -23,15 +24,12 @@ th{vertical-align:middle;}
 <th rowspan="2">Téléphone</th>
 <th rowspan="2">Email</th>
 <th rowspan="2">Date embauche</th>
-<th colspan="2">Congé Restant</th>
-<th colspan="2">Congé Pris</th>
-
+<th colspan="2">Congé pris</th>
+<th colspan="2">Congé restant</th>
 <th rowspan="2">Historique ?</th>
 <th rowspan="2">Modifier ?</th>
 <th rowspan="2">Désactiver ?</th>
 <th rowspan="2">Supprimer ?</th>
-
-
 </tr> 
 <tr>
     <th>Annuel</th>
@@ -47,10 +45,11 @@ th{vertical-align:middle;}
 <td>{{ab.phone}} </td>
 <td>{{ab.user.email}} </td>
 <td>{{ab.date_embauche}} </td>
-<td>{{ab.nbrEmp.last.solde_conge}} </td>
-<td>{{ab.nbrEmp.last.solde_conge_maladie}} </td>
 <td>{{ab.nombre_conges_annuels}}</td>
 <td>{{ab.nombre_conges_maladie}}</td>
+<td>{{ab.nbrEmp.last.solde_conge}} </td>
+<td>{{ab.nbrEmp.last.solde_conge_maladie}} </td>
+
 
 <td><a href="{% url 'admi:liste_demander_conge' ab.id %}">Historique</a></td>
 <td><a href="{% url 'admi:employe_modifier' ab.id%}">Modifier</a></td>

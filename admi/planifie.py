@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.append(str(BASE_DIR))
 
 # Définissez DJANGO_SETTINGS_MODULE pour indiquer où trouver les paramètres Django
-os.environ['DJANGO_SETTINGS_MODULE'] = 'admi_wps.settings'  # Chemin relatif à BASE_DIR
+os.environ['DJANGO_SETTINGS_MODULE'] = 'admi_wps.settings_pythonanywhere'  # Chemin relatif à BASE_DIR
 
 
 # Initialisation de l'environnement Django
@@ -33,7 +33,7 @@ def update_solde_conge():
     if current_day == 1 and current_month != 1:
         for compte in comptes:
             compte.solde_conge += Decimal('1.5')
-            compte.solde_conge_maladie += Decimal('1.5')
+            compte.solde_conge_maladie += Decimal('1.25')
             compte.save()
 
     # Logique pour réinitialiser le champ solde_conge à la fin de chaque année
@@ -46,11 +46,12 @@ def update_solde_conge():
                 solde_conge_maladie=Decimal('0')
             )
 
-# schedule.every(1).minutes.do(update_solde_conge) 
-schedule.every().day.at('00:00').do(update_solde_conge)
+# # schedule.every(1).minutes.do(update_solde_conge) 
+# schedule.every().day.at('00:00').do(update_solde_conge)
 
-# Boucle pour exécuter la planification en continu
-while True:
-    schedule.run_pending()
-    time.sleep(1)  # Attendre 1 seconde entre les vérifications
+# # Boucle pour exécuter la planification en continu
+# while True:
+#     schedule.run_pending()
+#     time.sleep(1)  # Attendre 1 seconde entre les vérifications
 
+update_solde_conge()

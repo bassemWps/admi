@@ -8,12 +8,12 @@
 <h7>en se basant sur date début du congé</h7>
 <table class="table table-striped ">
     <tr>
-    <td ><a href="{% url 'admi:liste_demander_conge_filtre' request.user.uzer.pk '1' %}">Aujourd'hui</a></td>
-    <td><a href="{% url 'admi:liste_demander_conge_filtre' request.user.uzer.pk  '2' %}">Hier</a></td>
-    <td><a href="{% url 'admi:liste_demander_conge_filtre' request.user.uzer.pk  '3' %}">Cette semaine</a></td>
-    <td><a href="{% url 'admi:liste_demander_conge_filtre' request.user.uzer.pk  '4' %}">Ce mois</a></td>
-    <td><a href="{% url 'admi:liste_demander_conge_filtre' request.user.uzer.pk  '5' %}">Cette année</a></td>
-    <td><a href="{% url 'admi:liste_demander_conge' request.user.uzer.pk   %}">Tous</a></td>
+    <td ><a href="{% url 'admi:liste_demander_conge_filtre' cle '1' %}">Aujourd'hui</a></td>
+    <td><a href="{% url 'admi:liste_demander_conge_filtre' cle  '2' %}">Hier</a></td>
+    <td><a href="{% url 'admi:liste_demander_conge_filtre' cle  '3' %}">Cette semaine</a></td>
+    <td><a href="{% url 'admi:liste_demander_conge_filtre' cle  '4' %}">Ce mois</a></td>
+    <td><a href="{% url 'admi:liste_demander_conge_filtre' cle  '5' %}">Cette année</a></td>
+    <td><a href="{% url 'admi:liste_demander_conge' cle   %}">Tous</a></td>
      </table>
     <br>
 

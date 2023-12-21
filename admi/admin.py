@@ -22,9 +22,9 @@ class compteAdmin(admin.ModelAdmin):
 
 @admin.register(PasserConge)
 class PasserCongeAdmin(admin.ModelAdmin):
-    list_display = ['employee', 'DateDemande', 'DateDebut',"DateFin","Accepte","Refuse"]
-    list_filter = ['employee', 'DateDemande','DateDebut',"DateFin","Accepte","Refuse"]
-    search_fields = ['employee', 'DateDemande','DateDebut',"DateFin","Accepte","Refuse"]
+    list_display = ['employee', 'type_conge','DateDemande', 'DateDebut',"DateFin","duree","Accepte","Refuse"]
+    list_filter = ['employee', 'type_conge','DateDemande', 'DateDebut',"DateFin","duree","Accepte","Refuse"]
+    search_fields = ['employee', 'type_conge','DateDemande', 'DateDebut',"DateFin","duree","Accepte","Refuse"]
     ordering = ['employee','Accepte']
 
 

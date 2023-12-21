@@ -2,23 +2,32 @@
 {% load static %}
 {% block title %}<title>Traiter Demande congé</title>{% endblock %}
 {% block content %}
+<style>
+th{vertical-align:middle;}
+td,th,tr{border:solid pink;text-align:center}
 
-
-<div class="card-body">
-
-    <table class="table table-striped ">
-<tr>
-<th>date demande</th>
-<th>Nom employe</th>    
-<th>Type conge</th>
-<th>Date début</th>
-<th>Date Fin</th>
-<th>Durée</th>
-<th>Solde congé Annuel</th>
-<th>Solde congé Maladie</th>
-<th>Refuser ?</th>
-<th>Accepter ?</th>
+</style>
+<div class="content">
+    <p>Congés pris et congés restant concernant l'année en cours</p>
+    <table class="table table-bordered">
+<tr >
+<th rowspan="2" >date demande</th>
+<th rowspan="2">Nom employe</th>    
+<th rowspan="2">Type conge</th>
+<th rowspan="2">Date début</th>
+<th rowspan="2">Date Fin</th>
+<th rowspan="2">Durée</th>
+<th colspan="2">Congé pris</th>
+<th colspan="2">Congé restant</th>
+<th rowspan="2">Refuser ?</th>
+<th rowspan="2">Accepter ?</th>
 </tr> 
+<tr>
+<td>Annuel</td>
+<td>Maladie</td>
+<td>Annuel</td>
+<td>Maladie</td>
+</tr>    
 {% for index, ab in dde %}  
 <tr>
     <tr>
@@ -28,6 +37,8 @@
         <td>{{ab.DateDebut}}</td>
         <td>{{ab.DateFin}}</td>
         <td>{{ab.duree}}</td>
+        <td>{{ab.nombre_conges_annuels}}</td>
+        <td>{{ab.nombre_conges_maladie}}</td>
         <td>{{ab.employee.nbrEmp.last.solde_conge}}</td>
         <td>{{ab.employee.nbrEmp.last.solde_conge_maladie}}</td>
         <td><a class="cinfirma" href="{% url 'admi:conge_repondre' ab.id 'ref' %}">Refuser</a></td>
