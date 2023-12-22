@@ -42,8 +42,10 @@
         <td>{{ab.nombre_conges_maladie}}</td>   
         <td>{{ab.employee.nbrEmp.last.solde_conge}}</td>
         <td>{{ab.employee.nbrEmp.last.solde_conge_maladie}}</td>
+         {% if not ab.Accepte and not ab.Refuse %} 
         <td><a class="cinfirma" href="{% url 'admi:conge_repondre' ab.id 'ref' %}">Refuser</a></td>
         <td><a class="confirma" href="{% url 'admi:conge_repondre' ab.id 'acc' %}">Accepter</a></td>
+        {%endif%}
     </tr>
     
 {% endfor %}
