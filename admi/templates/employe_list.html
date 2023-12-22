@@ -51,10 +51,10 @@ td,th,tr{border:solid pink;text-align:center}
 <td>{{ab.nbrEmp.last.solde_conge_maladie}} </td>
 
 
-<td><a href="{% url 'admi:liste_demander_conge' ab.id %}">Historique</a></td>
-<td><a href="{% url 'admi:employe_modifier' ab.id%}">Modifier</a></td>
-<td><a href="{% url 'admi:employe_deactiver' ab.id%}">Désactiver</a></td>
-<td><a href="{% url 'admi:employe_supprimer' ab.id%}">Supprimer</a></td>
+<td><a href="{% url 'admi:liste_demander_conge' ab.id %}"><button type="button">Historique</button></a></td>
+<td><a href="{% url 'admi:employe_modifier' ab.id%}"><button type="button">Modifier</button></a></td>
+<td><a href="{% url 'admi:employe_deactiver' ab.id%}"><button type="button">Désactiver</button></a></td>
+<td><a href="{% url 'admi:employe_supprimer' ab.id%}"><button type="button">Supprimer</button></a></td>
 
 </tr>
 {% endfor %}

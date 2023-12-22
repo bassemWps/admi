@@ -6,6 +6,7 @@
 <style>
     th{vertical-align:middle;}
     td,th,tr{border:solid pink;text-align:center}
+    a{display:button}
     </style>
 <div class="content">
 <p>Congés pris et congés restant concernant l'année en cours</p>
@@ -43,8 +44,8 @@
         <td>{{ab.employee.nbrEmp.last.solde_conge}}</td>
         <td>{{ab.employee.nbrEmp.last.solde_conge_maladie}}</td>
          {% if not ab.Accepte and not ab.Refuse %} 
-        <td><a class="cinfirma" href="{% url 'admi:conge_repondre' ab.id 'ref' %}">Refuser</a></td>
-        <td><a class="confirma" href="{% url 'admi:conge_repondre' ab.id 'acc' %}">Accepter</a></td>
+        <td><a class="cinfirma" href="{% url 'admi:conge_repondre' ab.id 'ref' %}"><button type="button">Refuser</button></a></td>
+        <td><a class="confirma" href="{% url 'admi:conge_repondre' ab.id 'acc' %}"><button type="button">Accepter</button></a></td>
         {%endif%}
     </tr>
     
