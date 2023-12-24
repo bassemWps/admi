@@ -257,14 +257,31 @@ def employe_list(request):
 @staff_member_required
 def employe_list2(request,pk=None):
 
-    
+    annee_en_cours = ExtractYear(date.today())
     employe = Employe.objects.filter(actif=True).exclude(fonction='Administrateur')
+
 
     if request.session.get('recherche', None): 
        employe=employe.filter(pk=pk)
       
+    employes_avec_nombre_conges = employe.annotate(
+        nombre_conges_annuels=Sum(
+            Case(
+                When(CongEmp__DateDebut__year=annee_en_cours, CongEmp__Accepte=True, CongEmp__type_conge='Congé Annuel',  then=F('CongEmp__duree')),default=0,
+                output_field=DecimalField()
+            )
+        ),
+        nombre_conges_maladie=Sum(
+            Case(
+                When(CongEmp__DateDebut__year=annee_en_cours, CongEmp__Accepte=True, CongEmp__type_conge='Congé de Maladie',  then=F('CongEmp__duree')),default=0,
+                output_field=DecimalField()
+            )
+        ),
+    )
+    return render(request, 'employe_list.html', {'emp'  : employes_avec_nombre_conges ,
 
-    return render(request, 'employe_list.html', {'emp'  : employe ,
+
+                                                 
                                                
                                                 } )
 @login_required
