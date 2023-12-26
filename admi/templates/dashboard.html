@@ -8,21 +8,33 @@
 
 {% if request.user.is_staff %}
 
-
+<div class="post-content">
+Employé(s) en congé:
+<ul>
+{% if enconge %}
+{% for ab in enconge %}
+<li>{{ab.employee.user.first_name}} reprend le travail le {{ab.DateFin}}</li>
+{% endfor%}
+{%else%}
+<li>Aucun employé</li>
+{% endif %}
+</ul>
+</div>
 {% if query %}
 
 {% if emp %}
-
+<div class="post-content">
 <h6>Employés:</h6>
 <ul>
 {% for ab in emp %}
 <li><a href="{% url 'admi:employe_list_filtre' ab.id %}"> &nbsp;{{ab.user.first_name}} &nbsp;  </a>
 {% endfor %} 
 </ul>
- 
+</div>
 {% endif %} 
 
 {% if cg %}
+<div class="post-content">
 <h6>Congés:</h6>
 <ul>
   {% for ab in cg %}
@@ -42,30 +54,18 @@
     </li>
   {% endfor %}
 </ul>
+</div>
 {% endif %} 
 
 {% endif %}
 
 {% endif %}
+
+
+
+
+
+
+
 {% endblock %}
 </div>
-
-
-
-<div class="messages">
-{% block msg %}
-
-{% if messages %}
-<ul class="messages">
-{% for message in messages %}
-<li class="{{ message.tags }}">
-{{ message|safe }}
-<a href="#" class="close">✖</a>
-</li>
-{% endfor %}
-</ul>
-{% endif %}
-{% endblock %}
-</div>
-
-

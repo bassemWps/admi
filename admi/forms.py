@@ -79,11 +79,11 @@ class UserRegistrationForm(forms.ModelForm):
             'first_name': 'Nom & prénom',
 
         }
-    def clean_password2(self):
-        cd = self.cleaned_data
-        if cd['password'] != cd['password2']:
-            raise forms.ValidationError('Les mots de passe ne sont pas identiques.')
-        return cd['password2']
+    # def clean_password2(self):
+    #     cd = self.cleaned_data
+    #     if cd['password'] != cd['password2']:
+    #         raise forms.ValidationError('Les mots de passe ne sont pas identiques.')
+    #     return cd['password2']
     def __init__(self, *args, **kwargs):
         # first call parent's constructor
         super(UserRegistrationForm, self).__init__(*args, **kwargs)

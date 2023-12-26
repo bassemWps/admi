@@ -10,7 +10,6 @@ from django.views.generic import CreateView,UpdateView,DeleteView
 from django.http import HttpResponseRedirect,HttpResponse
 from django.contrib import messages
 from django.conf import settings
-import os
 from django.http import JsonResponse
 from django.views.generic.edit import FormView
 from datetime import date,datetime
@@ -34,6 +33,9 @@ from django.core.mail import send_mail
 
 def dashboard(request):
     #seuil = Produit.objects.filter(quantite_stock__lte = F('seuil'))
+    annee_en_cours = ExtractYear(date.today())
+    enconge = PasserConge.objects.filter(Accepte=True, Refuse=False,DateDebut__year= annee_en_cours,DateFin__gt=date.today()) 
+
     query = request.GET.get('q')
     request.session['recherche'] = query
     if query:
@@ -88,37 +90,33 @@ def deconnexion(request):
     messages.success(request, f'Vous avez été deconnecté')
     return redirect('admi:connexion')
 
-import re
+
 def register(request):
     if request.method == 'POST':
-        if User.objects.filter(email=request.POST.get('email')).exists():  
-            messages.warning(request,"Veuillez choisir un autre email utilisateur")
-            return redirect('admi:connexion')
-        user_form = UserRegistrationForm(request.POST)
-        if user_form.is_valid():
-            new_user = user_form.save(commit=False)
-            new_user.set_password(
-            user_form.cleaned_data['password'])
-           
-            new_user.save()
-            Employe.objects.create(user=new_user,phone=user_form.cleaned_data['phone'],actif=True)
-        else:
-            phone_regex = re.compile(r'^\d{8}$')
-            if request.POST.get('password') != request.POST.get('password2'):
-                messages.warning(request,"Les mots de passe ne sont pas identiques")
-                print(f"{request.POST.get('password')} et  {request.POST.get('password2')}")
-            if not phone_regex.match(request.POST.get('phone')):
-                messages.warning(request,"Un numéro de tel doit comporter 8 chiffres")
-            if User.objects.filter(username=request.POST.get('username')).exists(): 
-                messages.warning(request,"Veuillez choisir un autre nom utilisateur")
-
 
             
-            messages.warning(request,"Un problème est survenu")
-            return redirect('admi:connexion')
-        messages.success(request, f'Votre compte à été créée avec succés')
-        return redirect('admi:connexion')
+        user_form = UserRegistrationForm(request.POST)
 
+        if user_form.is_valid():               
+            if User.objects.filter(username=user_form.cleaned_data['username']).exists():
+                messages.warning(request, "Ce nom d'utilisateur est déjà pris.")
+            elif not user_form.cleaned_data['phone'].isdigit() or len(user_form.cleaned_data['phone']) != 8:
+                messages.warning(request, "Le numéro de téléphone doit comporter 8 chiffres.")              
+            elif User.objects.filter(email=user_form.cleaned_data['email']).exists():
+                messages.warning(request, "Cet email est déjà utilisé.")   
+            # elif not  validate_email(user_form.cleaned_data['email']) :
+            #     messages.warning(request, "Veuillez choisir un email valide.")                                        
+            elif user_form.cleaned_data['password'] != user_form.cleaned_data['password2']:
+                messages.warning(request, "Les mots de passe doivent être identiques.")
+            else:    
+                new_user = user_form.save(commit=False)
+                new_user.set_password(
+                user_form.cleaned_data['password'])
+           
+                new_user.save()
+                Employe.objects.create(user=new_user,phone=user_form.cleaned_data['phone'])
+                messages.success(request, f'Votre compte à été créée avec succés')
+                return redirect('admi:dashboard')
     else:
         user_form = UserRegistrationForm()
     return render(request,'register.html',{'user_form':user_form})
@@ -253,6 +251,7 @@ def employe_list(request):
                                                
                                                 } )
 
+    
 
 @staff_member_required
 def employe_list2(request,pk=None):
