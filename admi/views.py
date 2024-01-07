@@ -190,6 +190,11 @@ class EmployeUpdateView(UpdateView):
             
               
             employe.user.first_name=new_nom
+
+            if User.objects.filter(email=new_email).exclude(username=employe.user.username).exists():
+                messages.warning(self.request, "Cet email est déjà pris.")
+                return self.form_invalid(form)  # Retourne form_invalid si l'e-mail n'est pas unique
+            
             employe.user.email =new_email
                 
             if employe.nbrEmp.exists():
@@ -208,7 +213,7 @@ class EmployeUpdateView(UpdateView):
 
            
             
-        return super().form_valid(form)
+            return super().form_valid(form)
 
 
 

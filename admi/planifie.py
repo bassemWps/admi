@@ -17,7 +17,7 @@ django.setup()
 # Importez maintenant les modules Django
 from django.utils import timezone
 from admi.apps import AdmiConfig  # Modifiez cette ligne pour importer votre AppConfig
-from admi.models import Compte
+from admi.models import Compte,Employe
 from decimal import Decimal
 
 
@@ -28,6 +28,7 @@ def update_solde_conge():
     # Logique pour incrémenter le champ solde_conge du modèle Compte
     # Par exemple, en ajoutant 1 à solde_conge à la fin de chaque mois
     comptes = Compte.objects.filter(annee=timezone.now().year)
+    employee = Employe.objects.filter(actif=True)
     current_month = timezone.now().month
     current_day = timezone.now().day
     if current_day == 1 and current_month != 1:
@@ -37,11 +38,11 @@ def update_solde_conge():
             compte.save()
 
     # Logique pour réinitialiser le champ solde_conge à la fin de chaque année
-    if current_month == 1 and current_day == 1:
-        for compte in comptes:
+    if current_month == 1 and current_day == 1 :
+        for em in employee:
             Compte.objects.create(
                 annee=timezone.now().year,
-                employee=compte.employee,
+                employee=em,
                 solde_conge=Decimal('0'),
                 solde_conge_maladie=Decimal('0')
             )
